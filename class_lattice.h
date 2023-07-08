@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include <fstream>
-
 #include <string>
 #include <vector>
 #include <random>
@@ -19,11 +18,7 @@
 
 using namespace std;
 
-#define SEED 42
-//random_device device;
-
-// Define precise constants
-constexpr double pi = 3.14159265358979323846;
+random_device device;
 
 //--- Contents -----------------------------------------------------------------
 
@@ -62,7 +57,7 @@ public:
         initial_flag(I_FLAG)
         {// CONSTRUCTION BEGIN
 
-        mt19937_64 generator_(SEED);
+        mt19937_64 generator_(device());
 
         double random_number;
         vector<int> nearest_list;
@@ -184,26 +179,23 @@ public:
         }
     }
 
-    double energy(double extfield){
+    double energy(const double& eta){
         /* Compute the energy of the present configuration */
 
-        double sum, ener = 0.;
+        double kin_ener = 0., pot_ener = 0.;
+
         for(int i = 0; i < tot_lenght_; i++) {
-            sum = 0.;
-            for(auto nn : nearest_neighbors_[i]) sum += latt_conf[nn];
-            ener += -0.5 * latt_conf[i] * sum - extfield * latt_conf[i];
+            if(i == tot_lenght_ - 1){
+                kin_ener += pow(latt_conf[0] - latt_conf[i], 2);
+            } else {
+                kin_ener += pow(latt_conf[i + 1] - latt_conf[i], 2);
+            }
+            pot_ener += pow(latt_conf[i], 2);
         }
-        ener = ener / tot_lenght_;
-        return ener;
-    }
+        kin_ener = - kin_ener / (2 * tot_lenght_ * pow(eta, 2));
+        pot_ener = pot_ener / (2 * tot_lenght_);
 
-    double magnetization(){
-        /* Compute the magnetization of the present configuration */
-
-        double sum = 0;
-        for(int i = 0; i < tot_lenght_; i++) sum += latt_conf[i];
-        sum = sum / tot_lenght_;
-        return sum;
+        return (kin_ener + pot_ener + 1./(2 * eta));
     }
 
     //--- Config methods -------------------------------------------------------
