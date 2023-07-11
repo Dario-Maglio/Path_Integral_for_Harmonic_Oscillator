@@ -4,7 +4,7 @@
 *
 *******************************************************************************/
 
-// g++ -I ./ harmonic_main.cpp -o harmonic.out
+// g++ -I ./include harmonic_main.cpp -o harmonic.out
 
 //--- Preprocessor directives --------------------------------------------------
 
@@ -48,12 +48,12 @@ using namespace std;
 
 // sides to simulate
 #define SIDE_SEP 40
-#define SIDE_MIN 40
-#define SIDE_MAX 480
+#define SIDE_MIN 20
+#define SIDE_MAX 500
 // fix the Temperature
 #define BETA_MAX 20
 // number of measures to save
-#define MEASURES 1000
+#define MEASURES 10000
 // decorrelation between measures
 #define I_DECORREL 100 // * V
 // initialization flags
@@ -66,7 +66,7 @@ const vector<int> betas = {1, 2, 3, 4, 7, 10, 15, BETA_MAX};
 
 //--- Contents -----------------------------------------------------------------
 
-void wave_function(int side, int beta){
+void wave_function(int beta, int side){
     /* Collect x-coordinates for a given side and beta */
 
     ofstream file;
@@ -97,7 +97,8 @@ void wave_function(int side, int beta){
     // Update ising and take measures
     for(int n = 0; n < MEASURES; n++){
         for(int i = 0; i < I_DECORREL; i++) traj.update(eta);
-        for(auto val : traj.latt_conf) file << val << endl;
+        for(auto val : traj.latt_conf) file << val << " ";
+        file << endl;
     }
     file.close();
 
@@ -106,8 +107,10 @@ void wave_function(int side, int beta){
     cout << "Creation of " << name_file_data << " completed." << endl << endl;
 }
 
-void run_simulation(int side, int beta){
-    /* MC-simulation for a given side and beta */
+//--- U(beta) procedures -------------------------------------------------------
+
+void run_simulation(int beta, int side){
+    /* MC-simulation of energy for a given side and beta */
 
     ofstream file;
     string directory, name_file, name_file_data, name_file_state;
@@ -147,24 +150,21 @@ void run_simulation(int side, int beta){
 }
 
 void beta_simulation(int beta){
-    /* Iterates the timed simulation with fixed beta over sides */
+    /* Iterates the energy simulation with fixed beta over sides */
 
-    // Initialize timing variables
-    auto start = chrono::steady_clock::now(), end = start;
-    chrono::duration<double> elapsed_sec = end - start;
     // Start simulation
+    auto start = chrono::steady_clock::now();
     cout << "Beta = " << beta << endl;
     for(int side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP){
-        start = chrono::steady_clock::now();
-        run_simulation(side, beta);
-        end = chrono::steady_clock::now();
-        elapsed_sec = end - start;
-        cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
+        run_simulation(beta, side);
     }
+    auto end = chrono::steady_clock::now();
+    chrono::duration<double> elapsed_sec = end - start;
+    cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
 }
 
 void energy_analysis(int beta){
-    /* Error analysis of the energy for a given beta */
+    /* Compute energy and error for a given beta */
 
     string file_path, file_name;
     ofstream file_data, file_analysis;
@@ -178,34 +178,137 @@ void energy_analysis(int beta){
     file_name = file_path + "_data.dat";
     cout << endl << "Creating file: " << file_name << endl << endl;
     file_data.open(file_name);
+
     // begin loop over sides
-    for(double side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP){
+    auto start = chrono::steady_clock::now();
+    for(int side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP){
         data = file_operations(side, beta, file_analysis);
         file_data << double(beta) / side << " ";
         for(auto val : data) file_data << val << " ";
         file_data << endl;
     }
+    auto end = chrono::steady_clock::now();
+    chrono::duration<double> elapsed_sec = end - start;
+    cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
 
     file_data.close();
     file_analysis.close();
+}
+
+//--- Gap procedures -----------------------------------------------------------
+
+void correl_simulation(int beta, int side){
+    /* MC-simulation of correlator C_k for a given beta and side */
+
+    ofstream file_corr, file_cor2;
+    string directory, name_file_data_1, name_file_data_2, name_file_state;
+    double eta = double(beta) / side;
+    lattice traj(side, G_FLAG, I_FLAG);
+
+    // Define path data directory
+    directory = "Data_simulations/Beta_" + to_string(beta) + "/";
+    // Define name file last configuration of the lattice
+    name_file_state = "correlations_side_" + to_string(side);
+    // Define name file simulation for a given side and beta
+    name_file_data_1 =  name_file_state + "_1.dat";
+    name_file_data_2 =  name_file_state + "_2.dat";
+    cout << "Creation of " << name_file_state << " begins..." << endl;
+
+    // Prepare the lattice and the data file for the simulation
+    if(I_FLAG == 2){
+        // Load last configuration of the lattice
+        traj.load_configuration(directory + name_file_state);
+        // Open the existing data file
+        file_corr.open(directory + name_file_data_1, ios_base::app);
+        file_corr.open(directory + name_file_data_2, ios_base::app);
+    } else {
+        // Thermalization phase
+        for(int i = 0; i < (100*I_DECORREL); i++) traj.update(eta);
+        // Open a new data file
+        file_corr.open(directory + name_file_data_1);
+        file_cor2.open(directory + name_file_data_2);
+    }
+    // Update ising and take measures
+    for(int n = 0; n < MEASURES; n++){
+        for(int i = 0; i < I_DECORREL; i++) traj.update(eta);
+        for(int k = 1; k <= CORREL_LENGTH; k++){
+            file_corr << traj.correlator(k) << " ";
+            file_cor2 << traj.correl_sqr(k) << " ";
+        }
+        file_corr << endl;
+        file_cor2 << endl;
+    }
+    file_corr.close();
+    file_cor2.close();
+
+    // We can stop the simulation when a file is completed
+    traj.save_configuration(directory + name_file_state);
+    cout << "Creation of " << name_file_data_1 << " completed." << endl << endl;
+}
+
+void correl_analysis(int beta){
+    /* Compute correlator C_k(eta) for a given beta */
+
+    string file_path, file_name_1, file_name_2;
+    ofstream file_data_1, file_data_2;
+    vector<double> data;
+
+    // create the data and logging files
+    file_path = "Data_simulations/Beta_" + to_string(beta) + "/";
+    file_name_1 = file_path + "correlations_1_data.dat";
+    file_name_2 = file_path + "correlations_2_data.dat";
+    cout << "Creating file: " << file_name_1 << endl << endl;
+    file_data_1.open(file_name_1);
+    file_data_2.open(file_name_2);
+
+    // begin loop over sides
+    auto start = chrono::steady_clock::now();
+    for(int side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP){
+        file_data_1 << double(beta) / side << " ";
+        file_data_2 << double(beta) / side << " ";
+
+        data = gap_operations(side, beta, 1);
+        for(auto val : data) file_data_1 << val << " ";
+        file_data_1 << endl;
+
+        data = gap_operations(side, beta, 2);
+        for(auto val : data) file_data_2 << val << " ";
+        file_data_2 << endl;
+    }
+    auto end = chrono::steady_clock::now();
+    chrono::duration<double> elapsed_sec = end - start;
+    cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
+
+    file_data_1.close();
+    file_data_2.close();
 }
 
 //--- Main ---------------------------------------------------------------------
 
 int main(){
 
-    cout << "Collecting positions for beta = " << BETA_MAX  << " and side = ";
-    cout << 200 << endl;
-    wave_function(200, BETA_MAX);
+    auto start = chrono::steady_clock::now();
 
-    cout << "--- Starting simulations... " << endl;
-    for(auto beta : betas)
-        beta_simulation(beta);
+    cout << "Collecting positions for beta = " << BETA_MAX;
+    cout << " and side = " << (SIDE_MAX + SIDE_MIN)/2 << endl;
+    wave_function(BETA_MAX, (SIDE_MAX + SIDE_MIN)/2);
 
-    cout << "--- Starting error analysis... " << endl;
-    for(auto beta : betas)
-        energy_analysis(beta);
+    cout << "--- Starting energy simulation... " << endl;
+    for(auto beta : betas) beta_simulation(beta);
 
+    cout << "--- Starting energy analysis... " << endl;
+    for(auto beta : betas) energy_analysis(beta);
+
+    cout << "--- Starting correl simulations... " << endl;
+    for(int side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP)
+        correl_simulation(BETA_MAX, side);
+
+    cout << "--- Starting correl analysis... " << endl;
+    correl_analysis(BETA_MAX);
+
+    auto end = chrono::steady_clock::now();
+    chrono::duration<double> elapsed_sec = end - start;
+    cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
     cout << "The work is done." << endl << endl;
     return 0;
 }

@@ -20,13 +20,12 @@ from scipy import stats
 
 # ground state wave fun
 BETA_GS = 20
-SIDE_GS = 200
 # simulated sides
 SIDE_SEP = 40
-SIDE_MIN = 40
-SIDE_MAX = 480
+SIDE_MIN = 20
+SIDE_MAX = 500
 # simulated betas
-betas = [1,2,3,4,7,10,15,20]
+betas = [1, 2, 3, 4, 7, 10, 15, BETA_GS]
 
 plt.style.use('ggplot')
 
@@ -42,6 +41,11 @@ def fit_ene(x, A, B):
     y = A + B / (np.exp(x) - 1)
     return y
 
+def fit_gap(x, A, B):
+    y = B * np.exp(-np.multiply(A, x))
+    return y
+
+
 #--- Plot procedures -----------------------------------------------------------
 
 def plot_wavefun(beta, side):
@@ -54,6 +58,7 @@ def plot_wavefun(beta, side):
     # load data from each side file
     if os.path.isfile(file_path):
         x = np.loadtxt(file_path, unpack='True')
+        x = np.reshape(x, -1)
     else:
         raise FileNotFoundError("Error: File not found!")
 
@@ -62,7 +67,6 @@ def plot_wavefun(beta, side):
     print("\nPlot " + title + "\n")
     # axis and style
     fig = plt.figure(title)
-    plt.style.use('seaborn-whitegrid')
     plt.title(title)
     plt.ylabel('$ Pr(x) $')
     plt.xlabel('$ x $')
@@ -116,7 +120,6 @@ def plot_energy(beta):
     print("\nPlot " + title + "\n")
     # axis and style
     fig = plt.figure(title)
-    plt.style.use('seaborn-whitegrid')
     plt.title(title)
     plt.ylabel(r'$ U(\eta) $')
     plt.xlabel(r'$ \eta $')
@@ -146,7 +149,7 @@ def plot_energy_beta(x, y, y_err):
     print("\nFit parameters:")
     print(f"{fit_a} ± {fit_da}\n{fit_b} ± {fit_db}")
     # reduced chi squared
-    fit_y = fit_fun(x, *parameters)
+    fit_y = fit_ene(x, *parameters)
     chisq = np.sum(np.power(((y - fit_y)/ y_err), 2))
     chisqrd = chisq / (len(x) - 3)
     print(f"Reduced chi squared: {chisqrd}")
@@ -156,13 +159,12 @@ def plot_energy_beta(x, y, y_err):
     print("\nPlot " + title + "\n")
     # axis and style
     fig = plt.figure(title)
-    plt.style.use('seaborn-whitegrid')
     plt.title(title)
     plt.ylabel(r'$ U_{ren}(\beta) $')
     plt.xlabel(r'$ N \eta $')
     # points and function
     fit_x = np.linspace(min(x), max(x), 100)
-    fit_y = fit_fun(fit_x, *parameters)
+    fit_y = fit_ene(fit_x, *parameters)
     fit_label = f'fit E_0 = {fit_a:.6f} ± {fit_da:.6f}'
     plt.plot(fit_x, fit_y, '-', label=fit_label)
     sim_label = f'computed energy'
@@ -172,12 +174,107 @@ def plot_energy_beta(x, y, y_err):
     plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
     plt.show()
 
+def plot_correlators(beta, label):
+
+    eta_val = []
+    gap_val = []
+    gap_err = []
+
+    #---Load data
+    file_path = os.path.join("Data_simulations", f"Beta_{beta}")
+    file = os.path.join(file_path, f"correlations_{label}_data.dat")
+    # load data from file
+    print("Loading " + file)
+    if os.path.isfile(file):
+        data = np.loadtxt(file, unpack='True')
+    else:
+        raise FileNotFoundError("Error: File not found!")
+
+    #--- Fit and plot correlator
+    title = f"Correlator {label} | Beta = {beta}"
+    print("\nPlot " + title + "\n")
+    fig = plt.figure(title)
+    plt.title(title)
+    plt.ylabel(r'$ C(k) $')
+    plt.xlabel(r'$ k $')
+
+    for n in range(data.shape[1] - 1):
+        row = data[:, n + 1]
+        k = [(i + 1) for i in range(len(row) - 1)]
+        x = [i*row[0] for i in k]
+        y = row[1:]
+
+        # fit data
+        parameters, covariance = curve_fit(fit_gap, x, y)
+        fit_a = parameters[0]
+        fit_b = parameters[1]
+        std_deviation = np.sqrt(np.diag(covariance))
+        fit_da = std_deviation[0]
+        fit_db = std_deviation[1]
+        print("\nFit parameters:")
+        print(f"{fit_a} ± {fit_da}\n{fit_b} ± {fit_db}")
+        # reduced chi squared
+        fit_y = fit_gap(x, *parameters)
+        chisq = np.sum(np.power(((y - fit_y)/ 1), 2))
+        chisqrd = chisq / (len(x) - 3)
+        print(f"Reduced chi squared: {chisqrd}")
+        # save fit results
+        eta_val.append(row[0])
+        gap_val.append(fit_a)
+        gap_err.append(fit_da)
+        # plot data
+        sim_label = f'side {int(beta/row[0] + 0.5)}'
+        plt.errorbar(k, y, fmt='<',label=sim_label)
+        fit_x = np.linspace(min(x), max(x), 100)
+        fit_y = fit_gap(fit_x, *parameters)
+        plt.plot(fit_x/row[0], fit_y, '-')
+
+    # save and show
+    plt.legend(loc='upper right')
+    plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
+    plt.show()
+
+    #--- Fit and plot energy gap
+    parameters, covariance = curve_fit(fit_fun, eta_val, gap_val, sigma=gap_err)
+    fit_a = parameters[0]
+    fit_b = parameters[1]
+    std_deviation = np.sqrt(np.diag(covariance))
+    fit_da = std_deviation[0]
+    fit_db = std_deviation[1]
+    print("\n---Fit parameters Energy Gap:")
+    print(f"{fit_a} ± {fit_da}\n{fit_b} ± {fit_db}")
+    # reduced chi squared
+    fit_y = fit_fun(eta_val, *parameters)
+    chisq = np.sum(np.power(((gap_val - fit_y)/ gap_err), 2))
+    chisqrd = chisq / (len(eta_val) - 3)
+    print(f"Reduced chi squared: {chisqrd}")
+    # plot details
+    title = f"Energy gap {label} | Beta = {beta}"
+    print("\nPlot " + title + "\n")
+    fig = plt.figure(title)
+    plt.title(title)
+    plt.ylabel(r'$ \Delta E (\eta) $')
+    plt.xlabel(r'$ \eta $')
+    # plot data
+    fit_x = np.linspace(min(eta_val), max(eta_val), 100)
+    fit_y = fit_fun(fit_x, *parameters)
+    plt.plot(fit_x, fit_y, '-')
+    plt.errorbar(eta_val, gap_val, yerr=gap_err, fmt='.',label=sim_label)
+    # save and show
+    plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
+    plt.show()
+
+
+
+
+
+
 
 #-------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    plot_wavefun(BETA_GS, SIDE_GS)
+    plot_wavefun(BETA_GS, int((SIDE_MIN + SIDE_MAX)/2))
 
     ene_val = []
     ene_err = []
@@ -187,3 +284,7 @@ if __name__ == '__main__':
         ene_err.append(y_err)
 
     plot_energy_beta(betas, ene_val, ene_err)
+
+    plot_correlators(BETA_GS, 1)
+
+    plot_correlators(BETA_GS, 2)

@@ -4,7 +4,7 @@
 *
 *******************************************************************************/
 
-// g++ ../class_lattice.h test_lattice_class.cpp -o t_lattice.out
+// g++ -I ../include test_lattice_class.cpp -o t_lattice.out
 
 //--- Preprocessor directives --------------------------------------------------
 
@@ -51,9 +51,8 @@ using namespace std;
 *
 *******************************************************************************/
 
-#define ETA 1.
-#define ETA_SEP 0.01
-#define I_DECORREL 10
+#define ETA 0.1
+#define ETA_SEP 0.001
 #define LOOPS 10000
 
 //--- Main Test ----------------------------------------------------------------
@@ -74,7 +73,7 @@ int main(){
         trajectory.load_configuration(file_name);
     } else {
         // Thermalization phase
-        for(int i = 0; i < (100*I_DECORREL); i++) trajectory.update(ETA);
+        for(int i = 0; i < (1000); i++) trajectory.update(ETA);
     }
     cout << "Ready to go!" << endl;
     // Show initial configuration
@@ -99,7 +98,7 @@ int main(){
             lattice_old = trajectory.latt_conf;
             trajectory.update(eta_val);
             for(int j = 0; j < SIDE; j++)
-               if(trajectory.latt_conf[j] == lattice_old[j]) up++;
+               if(trajectory.latt_conf[j] != lattice_old[j]) up++;
             // cout << "Single loop ratio: " << up << "/10" << endl;
             up_tot += up;
         }
