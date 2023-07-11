@@ -53,11 +53,11 @@ using namespace std;
 // fix the Temperature
 #define BETA_GS 50
 // number of measures to save
-#define MEASURES 100
+#define MEASURES 1900
 // decorrelation between measures
 #define I_DECORREL 100 // * V
 // initialization flags
-#define I_FLAG 0
+#define I_FLAG 2
 #define G_FLAG 1
 
 using namespace std;
@@ -149,20 +149,6 @@ void run_simulation(int beta, int side){
     // We can stop the simulation when a file is completed
     traj.save_configuration(directory + name_file_state);
     cout << "Creation of " << name_file_data << " completed." << endl << endl;
-}
-
-void beta_simulation(int beta){
-    /* Iterates the energy simulation with fixed beta over sides */
-
-    // Start simulation
-    auto start = chrono::steady_clock::now();
-    cout << "Beta = " << beta << endl;
-    for(int side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP){
-        run_simulation(beta, side);
-    }
-    auto end = chrono::steady_clock::now();
-    chrono::duration<double> elapsed_sec = end - start;
-    cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
 }
 
 void energy_analysis(int beta){
@@ -282,18 +268,27 @@ void correl_analysis(int beta, int label){
     file_data.close();
 }
 
-//--- Main ---------------------------------------------------------------------
+//--- Subroutines for the main program -----------------------------------------
 
-int main(){
+void beta_simulation(int beta){
+    /* Iterates the energy simulation with fixed beta over sides */
 
-    // Start timing
+    // Start simulation
     auto start = chrono::steady_clock::now();
+    cout << "Beta = " << beta << endl;
+    for(int side = SIDE_MIN; side <= SIDE_MAX; side += SIDE_SEP){
+        run_simulation(beta, side);
+    }
+    auto end = chrono::steady_clock::now();
+    chrono::duration<double> elapsed_sec = end - start;
+    cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
+}
+
+void sub_simulation(){
+    /* Simulation subroutine */
 
     cout << "--- Starting energy simulation... " << endl;
     for(auto beta : betas) beta_simulation(beta);
-
-    cout << "--- Starting energy analysis... " << endl;
-    for(auto beta : betas) energy_analysis(beta);
 
     cout << "--- Collecting x-positions... " << endl;
     wave_function(BETA_GS, (SIDE_MAX + SIDE_MIN)/2);
@@ -301,10 +296,29 @@ int main(){
     cout << "--- Starting correl simulations... " << endl;
     for(int side = SIDE_MIN + SIDE_SEP; side <= SIDE_MAX; side += SIDE_SEP)
         correl_simulation(BETA_GS, side);
+}
+
+void sub_analysis(){
+    /* Analysis subroutine */
+
+    cout << "--- Starting energy analysis... " << endl;
+    for(auto beta : betas) energy_analysis(beta);
 
     cout << "--- Starting correl analysis... " << endl;
     correl_analysis(BETA_GS, 1);
     correl_analysis(BETA_GS, 2);
+}
+
+//--- Main ---------------------------------------------------------------------
+
+int main(){
+
+    // Start timing
+    auto start = chrono::steady_clock::now();
+
+    sub_simulation();
+
+    //sub_analysis();
 
     // End timing
     auto end = chrono::steady_clock::now();

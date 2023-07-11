@@ -47,7 +47,7 @@ def fit_gap(x, A, B):
     return y
 
 
-#--- Plot procedures -----------------------------------------------------------
+#--- Procedures ----------------------------------------------------------------
 
 def plot_wavefun(beta, side):
 
@@ -81,7 +81,7 @@ def plot_wavefun(beta, side):
     n_bins = np.arange(-4, 4, binwidth)
     lab = 'GS wave func'
     y = np.random.normal(0, np.sqrt(0.5), 10000000)
-    plt.hist(y, n_bins, density=True, ls='solid', alpha=0.5, label=lab)
+    plt.hist(y, n_bins, density=True, ls='solid', alpha=0.5, lw=3, label=lab)
     # save and show
     plt.legend(loc='upper right')
     plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
@@ -101,6 +101,7 @@ def plot_energy(beta):
         x, y, y_err = np.loadtxt(file_path, unpack='True')
     else:
         raise FileNotFoundError("Error: File not found!")
+
     #---Fit
     parameters, covariance = curve_fit(fit_fun, x, y, sigma=y_err)
     fit_a = parameters[0]
@@ -181,7 +182,7 @@ def plot_correlators(beta, label):
     gap_val = []
     gap_err = []
 
-    #---Load data
+    #--- Load data
     file_path = os.path.join("Data_simulations", f"Beta_{beta}")
     file = os.path.join(file_path, f"correlations_{label}_data.dat")
     # load data from file
