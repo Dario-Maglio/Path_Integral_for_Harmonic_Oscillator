@@ -53,7 +53,7 @@ using namespace std;
 // fix the Temperature
 #define BETA_GS 50
 // number of measures to save
-#define MEASURES 1900
+#define MEASURES 10000
 // decorrelation between measures
 #define I_DECORREL 100 // * V
 // initialization flags
@@ -316,9 +316,9 @@ int main(){
     // Start timing
     auto start = chrono::steady_clock::now();
 
-    sub_simulation();
+    //sub_simulation();
 
-    //sub_analysis();
+    sub_analysis();
 
     // End timing
     auto end = chrono::steady_clock::now();
