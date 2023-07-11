@@ -18,14 +18,15 @@ from scipy import stats
 #
 #*******************************************************************************
 
-# ground state wave fun
-BETA_GS = 20
+CORREL_LENGTH = 40
+# beta for ground state
+BETA_GS = 50
 # simulated sides
 SIDE_SEP = 40
 SIDE_MIN = 20
 SIDE_MAX = 500
 # simulated betas
-betas = [1, 2, 3, 4, 7, 10, 15, BETA_GS]
+betas = [1, 2, 3, 4, 7, 10, 15, 20]
 
 plt.style.use('ggplot')
 
@@ -200,12 +201,15 @@ def plot_correlators(beta, label):
 
     for n in range(data.shape[1] - 1):
         row = data[:, n + 1]
-        k = [(i + 1) for i in range(len(row) - 1)]
-        x = [i*row[0] for i in k]
-        y = row[1:]
+        eta = row[0]
+        row = row[1:]
+        k = [(i + 1) for i in range(CORREL_LENGTH)]
+        x = [val*eta for val in k]
+        y_val = [row[2*i] for i in range(CORREL_LENGTH)]
+        y_err = [row[2*i+1] for i in range(CORREL_LENGTH)]
 
         # fit data
-        parameters, covariance = curve_fit(fit_gap, x, y)
+        parameters, covariance = curve_fit(fit_gap, x, y_val, sigma=y_err)
         fit_a = parameters[0]
         fit_b = parameters[1]
         std_deviation = np.sqrt(np.diag(covariance))
@@ -215,19 +219,19 @@ def plot_correlators(beta, label):
         print(f"{fit_a} ± {fit_da}\n{fit_b} ± {fit_db}")
         # reduced chi squared
         fit_y = fit_gap(x, *parameters)
-        chisq = np.sum(np.power(((y - fit_y)/ 1), 2))
+        chisq = np.sum(np.power(((y_val - fit_y)/ y_err), 2))
         chisqrd = chisq / (len(x) - 3)
         print(f"Reduced chi squared: {chisqrd}")
         # save fit results
-        eta_val.append(row[0])
+        eta_val.append(eta)
         gap_val.append(fit_a)
         gap_err.append(fit_da)
         # plot data
-        sim_label = f'side {int(beta/row[0] + 0.5)}'
-        plt.errorbar(k, y, fmt='<',label=sim_label)
+        sim_label = f'side {int(beta/eta + 0.5)}'
+        plt.errorbar(k, y_val, y_err, fmt='<',label=sim_label)
         fit_x = np.linspace(min(x), max(x), 100)
         fit_y = fit_gap(fit_x, *parameters)
-        plt.plot(fit_x/row[0], fit_y, '-')
+        plt.plot(fit_x/eta, fit_y, '-')
 
     # save and show
     plt.legend(loc='upper right')
@@ -264,17 +268,15 @@ def plot_correlators(beta, label):
     plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
     plt.show()
 
-
-
-
-
-
-
 #-------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
     plot_wavefun(BETA_GS, int((SIDE_MIN + SIDE_MAX)/2))
+
+    plot_correlators(BETA_GS, 1)
+
+    plot_correlators(BETA_GS, 2)
 
     ene_val = []
     ene_err = []
@@ -284,7 +286,3 @@ if __name__ == '__main__':
         ene_err.append(y_err)
 
     plot_energy_beta(betas, ene_val, ene_err)
-
-    plot_correlators(BETA_GS, 1)
-
-    plot_correlators(BETA_GS, 2)

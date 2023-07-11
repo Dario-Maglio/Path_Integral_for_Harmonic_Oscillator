@@ -46,7 +46,7 @@ mt19937_64 generator(SEED);
 #define MIN_CORR_LENGHT 1
 #define MAX_CORR_LENGHT 1
 #define NUM_FAKE_SAMP 10
-#define DIM_FAKE_SAMP 1000
+#define DIM_FAKE_SAMP 100
 
 //--- Contents -----------------------------------------------------------------
 
@@ -150,17 +150,20 @@ vector<double> file_operations(int side, int beta, ofstream &file_analysis){
     // compute the errors with bootstrap algorithm
     file_analysis << " --- energy error: " << endl;
     data.push_back(bootstrap_corr(energies, file_analysis));
+    file_analysis << "result: " << data[0] << " ± " << data[1] << endl;
 
     file_analysis << "-----------------------------" << endl << endl;
     return data;
 }
 
-vector<double> gap_operations(int side, int beta, int label){
-    /* Compute MC-averages of C_k for a given beta and side */
+vector<double> gap_operations(int side, int beta, int label, ofstream &file_analysis){
+    /* Compute MC-averages of C_k and errors for a given beta and side */
 
     int measures = 0;
     double value = 0.;
-    vector<double> correl(CORREL_LENGTH, 0.);
+    vector<double> correl(2*CORREL_LENGTH, 0.);
+    vector<double> values(CORREL_LENGTH, 0.);
+    vector<vector<double>> data;
     string file_path, file_name, line;
 
     // define file path and name
@@ -170,18 +173,18 @@ vector<double> gap_operations(int side, int beta, int label){
     ifstream file(file_path + file_name);
     // load data and compute averages
     if (file.is_open()) {
-        // get a line with k elements C_k over a single path
+        // get a line with k elements C_k
         while(getline(file, line)){
             measures++;
             istringstream sstream(line);
             // sum each C_k in correl[k]
             for(int k = 0; k < CORREL_LENGTH; k++){
                 sstream >> value;
-                correl[k] += value;
+                correl[2*k] += value;
+                values[k] = value;
             }
+            data.push_back(values);
         }
-        // normalize the average and close the file
-        for(int k = 0; k < CORREL_LENGTH; k++) correl[k] = correl[k] / measures;
         file.close();
     } else {
         // Stop execution: invalid file
@@ -189,6 +192,26 @@ vector<double> gap_operations(int side, int beta, int label){
         exit(1);
     }
 
+    // normalize each C_k and compute the error
+    values.resize(measures, 0.);
+    for(int k = 0; k < CORREL_LENGTH; k++){
+
+        // normalize the average
+        correl[2*k] = correl[2*k] / measures;
+
+        // load measures for this k
+        for(int i = 0; i < measures; i++) values[i] = data[i][k];
+
+        // call the bootstrap algorithm
+        file_analysis << "-----------------------------" << endl;
+        file_analysis << "k_val: " << k << " | side: " << side << endl;
+        file_analysis << "-----------------------------" << endl;
+        correl[2*k+1] = bootstrap_corr(values, file_analysis);
+        file_analysis << "result: " << correl[2*k] << " ± " << correl[2*k+1];
+        file_analysis << endl << endl;
+    }
+
+    file_analysis << "-----------------------------" << endl << endl;
     return correl;
 }
 

@@ -182,7 +182,7 @@ public:
     double energy(const double& eta){
         /* Compute the energy of the present configuration */
 
-        double kin_ener = 0., pot_ener = 0.;
+        double ren_energy, kin_ener = 0., pot_ener = 0.;
 
         for(int i = 0; i < tot_lenght_; i++) {
             if(i == tot_lenght_ - 1){
@@ -192,10 +192,10 @@ public:
             }
             pot_ener += pow(latt_conf[i], 2);
         }
-        kin_ener = - kin_ener / (tot_lenght_ * pow(eta, 2));
-        pot_ener = pot_ener / tot_lenght_;
+        ren_energy = tot_lenght_/eta - kin_ener/pow(eta, 2) + pot_ener;
+        ren_energy = ren_energy / (2 * tot_lenght_);
 
-        return (kin_ener + pot_ener + 1./eta) / 2;
+        return ren_energy;
     }
 
     double correlator(int k){
@@ -220,15 +220,18 @@ public:
         /* Compute the correlator function between i and i+k */
 
         int index = 0;
-        double corr = 0.;
+        double corr = 0., sqrave = 0.;
 
         for(int i = 0; i < tot_lenght_; i++) {
+            // sum average value
+            sqrave += pow(latt_conf[i], 2);
+            // sum correlator
             index = i + k;
             if(index > tot_lenght_ - 1)
                 index -= tot_lenght_ - 1;
             corr += pow(latt_conf[index] * latt_conf[i], 2);
         }
-        corr = corr / tot_lenght_;
+        corr = corr/tot_lenght_ - pow(sqrave/tot_lenght_, 2);
 
         return corr;
 
