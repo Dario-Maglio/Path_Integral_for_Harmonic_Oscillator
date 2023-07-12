@@ -53,12 +53,18 @@ using namespace std;
 // fix the Temperature
 #define BETA_GS 50
 // number of measures to save
-#define MEASURES 10000
+#define MEASURES 5000
 // decorrelation between measures
 #define I_DECORREL 100 // * V
 // initialization flags
 #define I_FLAG 2
 #define G_FLAG 1
+// flags for the main program
+#define WAVE_FLAG 1
+#define ENER_FLAG 1
+#define CORR_FLAG 1
+#define ANAL_FLAG 1
+#define SIMU_FLAG 1
 
 using namespace std;
 
@@ -188,7 +194,7 @@ void energy_analysis(int beta){
 void correl_simulation(int beta, int side){
     /* MC-simulation of correlators C_k for a given beta and side */
 
-    ofstream file_corr, file_cor2;
+    ofstream file_corr1, file_corr2;
     string directory, name_file_data_1, name_file_data_2, name_file_state;
     double eta = double(beta) / side;
     lattice traj(side, G_FLAG, I_FLAG);
@@ -207,27 +213,32 @@ void correl_simulation(int beta, int side){
         // Load last configuration of the lattice
         traj.load_configuration(directory + name_file_state);
         // Open the existing data file
-        file_corr.open(directory + name_file_data_1, ios_base::app);
-        file_corr.open(directory + name_file_data_2, ios_base::app);
+        file_corr1.open(directory + name_file_data_1, ios_base::app);
+        file_corr2.open(directory + name_file_data_2, ios_base::app);
     } else {
         // Thermalization phase
         for(int i = 0; i < (100*I_DECORREL); i++) traj.update(eta);
         // Open a new data file
-        file_corr.open(directory + name_file_data_1);
-        file_cor2.open(directory + name_file_data_2);
+        file_corr1.open(directory + name_file_data_1);
+        file_corr2.open(directory + name_file_data_2);
     }
-    // Update ising and take measures
+    // Update lattice and take measures
     for(int n = 0; n < MEASURES; n++){
+        // update lattice configuration
         for(int i = 0; i < I_DECORREL; i++) traj.update(eta);
+        // compute average x^i on this path
+        file_corr1 << traj.average() << " ";
+        file_corr2 << traj.correlator_1(0) << " ";
         for(int k = 1; k <= CORREL_LENGTH; k++){
-            file_corr << traj.correlator(k) << " ";
-            file_cor2 << traj.correl_sqr(k) << " ";
+            // compute average x^i(k) x^i(0) on this path
+            file_corr1 << traj.correlator_1(k) << " ";
+            file_corr2 << traj.correlator_2(k) << " ";
         }
-        file_corr << endl;
-        file_cor2 << endl;
+        file_corr1 << endl;
+        file_corr2 << endl;
     }
-    file_corr.close();
-    file_cor2.close();
+    file_corr1.close();
+    file_corr2.close();
 
     // We can stop the simulation when a file is completed
     traj.save_configuration(directory + name_file_state);
@@ -236,7 +247,7 @@ void correl_simulation(int beta, int side){
 
 void correl_analysis(int beta, int label){
     /* Compute correlators C_k(eta) and errors for a given beta */
-    // C_k = <x^i(k) x^i(0)> - <x^i(0)>^i with i = label.
+    // C_k = <x^i(k) x^i(0)> - <x^i>^i with i = label.
 
     string file_path, file_name;
     ofstream file_data, file_analysis;
@@ -284,31 +295,6 @@ void beta_simulation(int beta){
     cout << "Elapsed time: " << elapsed_sec.count() << "s " << endl << endl;
 }
 
-void sub_simulation(){
-    /* Simulation subroutine */
-
-    cout << "--- Starting energy simulation... " << endl;
-    for(auto beta : betas) beta_simulation(beta);
-
-    cout << "--- Collecting x-positions... " << endl;
-    wave_function(BETA_GS, (SIDE_MAX + SIDE_MIN)/2);
-
-    cout << "--- Starting correl simulations... " << endl;
-    for(int side = SIDE_MIN + SIDE_SEP; side <= SIDE_MAX; side += SIDE_SEP)
-        correl_simulation(BETA_GS, side);
-}
-
-void sub_analysis(){
-    /* Analysis subroutine */
-
-    cout << "--- Starting energy analysis... " << endl;
-    for(auto beta : betas) energy_analysis(beta);
-
-    cout << "--- Starting correl analysis... " << endl;
-    correl_analysis(BETA_GS, 1);
-    correl_analysis(BETA_GS, 2);
-}
-
 //--- Main ---------------------------------------------------------------------
 
 int main(){
@@ -316,9 +302,32 @@ int main(){
     // Start timing
     auto start = chrono::steady_clock::now();
 
-    //sub_simulation();
+    if(WAVE_FLAG){
+        cout << "--- Collecting x-positions... " << endl;
+        wave_function(BETA_GS, (SIDE_MAX + SIDE_MIN)/2);
+    }
 
-    sub_analysis();
+    if(SIMU_FLAG & ENER_FLAG){
+        cout << "--- Starting energy simulation... " << endl;
+        for(auto beta : betas) beta_simulation(beta);
+    }
+
+    if(SIMU_FLAG & CORR_FLAG){
+        cout << "--- Starting correl simulations... " << endl;
+        for(int side = SIDE_MIN + SIDE_SEP; side <= SIDE_MAX; side += SIDE_SEP)
+            correl_simulation(BETA_GS, side);
+    }
+
+    if(ANAL_FLAG & ENER_FLAG){
+        cout << "--- Starting energy analysis... " << endl;
+        for(auto beta : betas) energy_analysis(beta);
+    }
+
+    if(ANAL_FLAG & CORR_FLAG){
+        cout << "--- Starting correl analysis... " << endl;
+        correl_analysis(BETA_GS, 1);
+        correl_analysis(BETA_GS, 2);
+    }
 
     // End timing
     auto end = chrono::steady_clock::now();

@@ -200,8 +200,8 @@ def plot_correlators(beta, label):
     plt.ylabel(r'$ C(k) $')
     plt.xlabel(r'$ k $')
 
-    for n in range(data.shape[1] - 1):
-        row = data[:, n + 1]
+    for n in range(data.shape[1]):
+        row = data[:, n]
         eta = row[0]
         row = row[1:]
         k = [(i + 1) for i in range(CORREL_LENGTH)]
@@ -229,10 +229,11 @@ def plot_correlators(beta, label):
         gap_err.append(fit_da)
         # plot data
         sim_label = f'side {int(beta/eta + 0.5)}'
-        plt.errorbar(k, y_val, y_err, fmt='<',label=sim_label)
+        plot = plt.errorbar(k, y_val, y_err, fmt='<', label=sim_label)
+        color = plot[0].get_color()
         fit_x = np.linspace(min(x), max(x), 100)
         fit_y = fit_gap(fit_x, *parameters)
-        plt.plot(fit_x/eta, fit_y, '-')
+        plt.plot(fit_x/eta, fit_y, '-', color=color)
 
     # save and show
     plt.legend(loc='upper right')
@@ -263,9 +264,10 @@ def plot_correlators(beta, label):
     # plot data
     fit_x = np.linspace(min(eta_val), max(eta_val), 100)
     fit_y = fit_fun(fit_x, *parameters)
-    plt.plot(fit_x, fit_y, '-')
-    plt.errorbar(eta_val, gap_val, yerr=gap_err, fmt='.',label=sim_label)
+    plt.plot(fit_x, fit_y, '-', label=f'Fit gap = {fit_a:.4f} ± {fit_da:.4f}')
+    plt.errorbar(eta_val, gap_val, yerr=gap_err, fmt='.')
     # save and show
+    plt.legend(loc='upper right')
     plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
     plt.show()
 

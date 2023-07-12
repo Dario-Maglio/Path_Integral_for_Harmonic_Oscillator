@@ -198,7 +198,18 @@ public:
         return ren_energy;
     }
 
-    double correlator(int k){
+    double average(){
+        /* Compute the average position of the current path */
+
+        double aver = 0.;
+
+        for(int i = 0; i < tot_lenght_; i++) aver += latt_conf[i];
+        aver = aver / tot_lenght_;
+
+        return aver;
+    }
+
+    double correlator_1(int k){
         /* Compute the correlator function between i and i+k */
 
         int index = 0;
@@ -207,34 +218,29 @@ public:
         for(int i = 0; i < tot_lenght_; i++) {
             index = i + k;
             if(index > tot_lenght_ - 1)
-                index -= tot_lenght_ - 1;
+                index -= tot_lenght_;
             corr += latt_conf[index] * latt_conf[i];
         }
         corr = corr / tot_lenght_;
 
         return corr;
-
     }
 
-    double correl_sqr(int k){
+    double correlator_2(int k){
         /* Compute the correlator function between i and i+k */
 
         int index = 0;
-        double corr = 0., sqrave = 0.;
+        double corr = 0.;
 
         for(int i = 0; i < tot_lenght_; i++) {
-            // sum average value
-            sqrave += pow(latt_conf[i], 2);
-            // sum correlator
             index = i + k;
             if(index > tot_lenght_ - 1)
-                index -= tot_lenght_ - 1;
+                index -= tot_lenght_;
             corr += pow(latt_conf[index] * latt_conf[i], 2);
         }
-        corr = corr/tot_lenght_ - pow(sqrave/tot_lenght_, 2);
+        corr = corr/tot_lenght_;
 
         return corr;
-
     }
 
     //--- Config methods -------------------------------------------------------

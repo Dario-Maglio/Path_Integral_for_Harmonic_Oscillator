@@ -44,9 +44,9 @@ mt19937_64 generator(SEED);
 #define CORREL_LENGTH 40
 // correlations in the MC-average
 #define MIN_CORR_LENGHT 1
-#define MAX_CORR_LENGHT 64
+#define MAX_CORR_LENGHT 128
 #define NUM_FAKE_SAMP 100
-#define DIM_FAKE_SAMP 10000
+#define DIM_FAKE_SAMP 15000
 
 //--- Contents -----------------------------------------------------------------
 
@@ -63,7 +63,7 @@ double bootstrap_corr(vector<double>& x, ofstream &file){
 
     measures.reserve(NUM_FAKE_SAMP);
     fake_sample.reserve(DIM_FAKE_SAMP);
-    uniform_int_distribution<long int> randomint(0, x.size());
+    uniform_int_distribution<int> randomint(0, x.size());
 
     // iterate over different correlation lenghts
     for(int lenght = MIN_CORR_LENGHT; lenght <= MAX_CORR_LENGHT; lenght *= 2){
@@ -160,7 +160,7 @@ vector<double> gap_operations(int side, int beta, int label, ofstream &file_anal
     /* Compute MC-averages of C_k and errors for a given beta and side */
 
     int measures = 0;
-    double value = 0.;
+    double value = 0., C_zero = 0.;
     vector<double> correl(2*CORREL_LENGTH, 0.);
     vector<double> values(CORREL_LENGTH, 0.);
     vector<vector<double>> data;
@@ -177,6 +177,8 @@ vector<double> gap_operations(int side, int beta, int label, ofstream &file_anal
         while(getline(file, line)){
             measures++;
             istringstream sstream(line);
+            sstream >> value;
+            C_zero += value;
             // sum each C_k in correl[k]
             for(int k = 0; k < CORREL_LENGTH; k++){
                 sstream >> value;
@@ -193,18 +195,20 @@ vector<double> gap_operations(int side, int beta, int label, ofstream &file_anal
     }
 
     // normalize each C_k and compute the error
+    C_zero = C_zero / measures;
     values.resize(measures, 0.);
     for(int k = 0; k < CORREL_LENGTH; k++){
 
         // normalize the average
-        correl[2*k] = correl[2*k] / measures;
+        correl[2*k] = (correl[2*k] / measures) - pow(C_zero, 2);
 
         // load measures for this k
-        for(int i = 0; i < measures; i++) values[i] = data[i][k];
+        for(int i = 0; i < measures; i++)
+            values[i] = data[i][k];
 
         // call the bootstrap algorithm
         file_analysis << "-----------------------------" << endl;
-        file_analysis << "k_val: " << k << " | side: " << side << endl;
+        file_analysis << "k_val: " << k + 1 << " | side: " << side << endl;
         file_analysis << "-----------------------------" << endl;
         correl[2*k+1] = bootstrap_corr(values, file_analysis);
         file_analysis << "result: " << correl[2*k] << " ± " << correl[2*k+1];
