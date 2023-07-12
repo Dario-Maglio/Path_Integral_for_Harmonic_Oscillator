@@ -11,13 +11,12 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
-#include <chrono>
+#include <sstream>
 
 #include <cmath>
-#include <vector>
 #include <random>
+#include <vector>
 
 using namespace std;
 
@@ -46,7 +45,7 @@ mt19937_64 generator(SEED);
 #define MIN_CORR_LENGHT 1
 #define MAX_CORR_LENGHT 128
 #define NUM_FAKE_SAMP 100
-#define DIM_FAKE_SAMP 15000
+#define DIM_FAKE_SAMP 20000
 
 //--- Contents -----------------------------------------------------------------
 

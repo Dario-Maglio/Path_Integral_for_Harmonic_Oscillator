@@ -11,8 +11,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
+
 #include <chrono>
+#include <vector>
 
 // Import the Class lattice
 #include "class_lattice.h"
@@ -60,7 +61,7 @@ using namespace std;
 #define I_FLAG 2
 #define G_FLAG 1
 // flags for the main program
-#define WAVE_FLAG 1
+#define WAVE_FLAG 0
 #define ENER_FLAG 1
 #define CORR_FLAG 1
 #define ANAL_FLAG 1

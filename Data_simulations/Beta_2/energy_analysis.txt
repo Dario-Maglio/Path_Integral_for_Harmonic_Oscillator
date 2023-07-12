@@ -2,181 +2,194 @@
 side: 20 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.699015 ± 0.0152674
-correl lenght 2 -> 0.703105 ± 0.017146
-correl lenght 4 -> 0.703783 ± 0.0174553
-correl lenght 8 -> 0.701536 ± 0.0186096
-correl lenght 16 -> 0.702063 ± 0.0181517
-correl lenght 32 -> 0.704825 ± 0.0193439
-correl lenght 64 -> 0.69878 ± 0.0168499
-result: 0.701293 ± 0.0168499
+correl lenght 1 -> 0.671808 ± 0.0112548
+correl lenght 2 -> 0.675233 ± 0.0144058
+correl lenght 4 -> 0.671253 ± 0.0125507
+correl lenght 8 -> 0.674105 ± 0.0121994
+correl lenght 16 -> 0.676052 ± 0.0139378
+correl lenght 32 -> 0.674978 ± 0.0153636
+correl lenght 64 -> 0.676716 ± 0.0133272
+correl lenght 128 -> 0.673102 ± 0.0166888
+result: 0.672906 ± 0.0166888
 -----------------------------
 
 -----------------------------
 side: 60 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.645823 ± 0.0260845
-correl lenght 2 -> 0.647873 ± 0.0295694
-correl lenght 4 -> 0.642154 ± 0.0269728
-correl lenght 8 -> 0.645025 ± 0.0279862
-correl lenght 16 -> 0.643932 ± 0.0336459
-correl lenght 32 -> 0.643845 ± 0.0364839
-correl lenght 64 -> 0.645188 ± 0.0391414
-result: 0.64515 ± 0.0391414
+correl lenght 1 -> 0.640677 ± 0.0200832
+correl lenght 2 -> 0.63636 ± 0.0225829
+correl lenght 4 -> 0.638096 ± 0.023734
+correl lenght 8 -> 0.639368 ± 0.0242566
+correl lenght 16 -> 0.640981 ± 0.0255896
+correl lenght 32 -> 0.645895 ± 0.0279597
+correl lenght 64 -> 0.639987 ± 0.0294161
+correl lenght 128 -> 0.637969 ± 0.0288141
+result: 0.640618 ± 0.0288141
 -----------------------------
 
 -----------------------------
 side: 100 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.551127 ± 0.0358245
-correl lenght 2 -> 0.557519 ± 0.0352256
-correl lenght 4 -> 0.555252 ± 0.0392001
-correl lenght 8 -> 0.552126 ± 0.0346602
-correl lenght 16 -> 0.554502 ± 0.0367906
-correl lenght 32 -> 0.559741 ± 0.0426995
-correl lenght 64 -> 0.562939 ± 0.0488721
-result: 0.554387 ± 0.0488721
+correl lenght 1 -> 0.613423 ± 0.0287708
+correl lenght 2 -> 0.620604 ± 0.034029
+correl lenght 4 -> 0.615619 ± 0.0328201
+correl lenght 8 -> 0.615429 ± 0.0325794
+correl lenght 16 -> 0.615834 ± 0.0351608
+correl lenght 32 -> 0.617168 ± 0.033499
+correl lenght 64 -> 0.61459 ± 0.0360646
+correl lenght 128 -> 0.615894 ± 0.0368359
+result: 0.616077 ± 0.0368359
 -----------------------------
 
 -----------------------------
 side: 140 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.684205 ± 0.0404111
-correl lenght 2 -> 0.684936 ± 0.0446688
-correl lenght 4 -> 0.689551 ± 0.046942
-correl lenght 8 -> 0.691941 ± 0.0480697
-correl lenght 16 -> 0.698175 ± 0.0499854
-correl lenght 32 -> 0.69844 ± 0.0611449
-correl lenght 64 -> 0.694612 ± 0.0601016
-result: 0.690617 ± 0.0601016
+correl lenght 1 -> 0.64093 ± 0.0349035
+correl lenght 2 -> 0.646753 ± 0.0374619
+correl lenght 4 -> 0.647708 ± 0.0347086
+correl lenght 8 -> 0.650434 ± 0.0339809
+correl lenght 16 -> 0.6409 ± 0.0379973
+correl lenght 32 -> 0.645721 ± 0.0412188
+correl lenght 64 -> 0.649395 ± 0.0502896
+correl lenght 128 -> 0.6383 ± 0.0433169
+result: 0.643458 ± 0.0433169
 -----------------------------
 
 -----------------------------
 side: 180 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.722258 ± 0.0501454
-correl lenght 2 -> 0.721878 ± 0.0523367
-correl lenght 4 -> 0.719342 ± 0.0472903
-correl lenght 8 -> 0.725963 ± 0.0582902
-correl lenght 16 -> 0.716373 ± 0.0517031
-correl lenght 32 -> 0.722117 ± 0.0661029
-correl lenght 64 -> 0.720401 ± 0.0712937
-result: 0.72295 ± 0.0712937
+correl lenght 1 -> 0.682736 ± 0.0329071
+correl lenght 2 -> 0.682207 ± 0.0426046
+correl lenght 4 -> 0.69164 ± 0.0396447
+correl lenght 8 -> 0.687492 ± 0.0441133
+correl lenght 16 -> 0.690214 ± 0.0458335
+correl lenght 32 -> 0.687642 ± 0.0552928
+correl lenght 64 -> 0.679478 ± 0.0565099
+correl lenght 128 -> 0.680901 ± 0.0681352
+result: 0.685024 ± 0.0681352
 -----------------------------
 
 -----------------------------
 side: 220 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.558319 ± 0.0515201
-correl lenght 2 -> 0.548836 ± 0.0522831
-correl lenght 4 -> 0.550576 ± 0.0575015
-correl lenght 8 -> 0.550352 ± 0.0652357
-correl lenght 16 -> 0.545671 ± 0.0617856
-correl lenght 32 -> 0.537093 ± 0.0611859
-correl lenght 64 -> 0.54385 ± 0.0711238
-result: 0.551721 ± 0.0711238
+correl lenght 1 -> 0.525511 ± 0.0426838
+correl lenght 2 -> 0.515884 ± 0.0474907
+correl lenght 4 -> 0.518756 ± 0.0458989
+correl lenght 8 -> 0.513744 ± 0.0470022
+correl lenght 16 -> 0.518791 ± 0.0478764
+correl lenght 32 -> 0.520617 ± 0.0507413
+correl lenght 64 -> 0.525134 ± 0.0527639
+correl lenght 128 -> 0.524065 ± 0.0694726
+result: 0.518322 ± 0.0694726
 -----------------------------
 
 -----------------------------
 side: 260 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.52446 ± 0.0545183
-correl lenght 2 -> 0.538471 ± 0.0623586
-correl lenght 4 -> 0.534587 ± 0.0617269
-correl lenght 8 -> 0.52272 ± 0.0571165
-correl lenght 16 -> 0.528561 ± 0.0624497
-correl lenght 32 -> 0.539567 ± 0.0667964
-correl lenght 64 -> 0.526952 ± 0.0870339
-result: 0.531817 ± 0.0870339
+correl lenght 1 -> 0.476757 ± 0.0432116
+correl lenght 2 -> 0.480438 ± 0.0514943
+correl lenght 4 -> 0.48615 ± 0.04825
+correl lenght 8 -> 0.482085 ± 0.0507609
+correl lenght 16 -> 0.475843 ± 0.0569469
+correl lenght 32 -> 0.493217 ± 0.0500587
+correl lenght 64 -> 0.481563 ± 0.0590108
+correl lenght 128 -> 0.48156 ± 0.0574142
+result: 0.478057 ± 0.0574142
 -----------------------------
 
 -----------------------------
 side: 300 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.499326 ± 0.061259
-correl lenght 2 -> 0.503768 ± 0.0571157
-correl lenght 4 -> 0.50616 ± 0.073037
-correl lenght 8 -> 0.505715 ± 0.061029
-correl lenght 16 -> 0.496921 ± 0.0627012
-correl lenght 32 -> 0.504548 ± 0.0764021
-correl lenght 64 -> 0.497587 ± 0.0741395
-result: 0.501054 ± 0.0741395
+correl lenght 1 -> 0.47381 ± 0.0553299
+correl lenght 2 -> 0.488039 ± 0.0523941
+correl lenght 4 -> 0.476743 ± 0.0462883
+correl lenght 8 -> 0.480712 ± 0.0578506
+correl lenght 16 -> 0.479984 ± 0.0540993
+correl lenght 32 -> 0.478944 ± 0.0698864
+correl lenght 64 -> 0.496503 ± 0.0629428
+correl lenght 128 -> 0.496351 ± 0.0743454
+result: 0.478101 ± 0.0743454
 -----------------------------
 
 -----------------------------
 side: 340 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.521512 ± 0.0607755
-correl lenght 2 -> 0.531427 ± 0.06288
-correl lenght 4 -> 0.532317 ± 0.0714395
-correl lenght 8 -> 0.524274 ± 0.0666459
-correl lenght 16 -> 0.533155 ± 0.0739472
-correl lenght 32 -> 0.530169 ± 0.0702833
-correl lenght 64 -> 0.537706 ± 0.0666805
-result: 0.530928 ± 0.0666805
+correl lenght 1 -> 0.484562 ± 0.0456118
+correl lenght 2 -> 0.488279 ± 0.0538885
+correl lenght 4 -> 0.482514 ± 0.059793
+correl lenght 8 -> 0.479921 ± 0.0591582
+correl lenght 16 -> 0.485905 ± 0.0610427
+correl lenght 32 -> 0.479879 ± 0.0552601
+correl lenght 64 -> 0.488091 ± 0.0620762
+correl lenght 128 -> 0.479479 ± 0.0681998
+result: 0.489002 ± 0.0681998
 -----------------------------
 
 -----------------------------
 side: 380 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.853084 ± 0.067504
-correl lenght 2 -> 0.858437 ± 0.0788626
-correl lenght 4 -> 0.869281 ± 0.0654668
-correl lenght 8 -> 0.861389 ± 0.08425
-correl lenght 16 -> 0.859305 ± 0.0870144
-correl lenght 32 -> 0.869737 ± 0.0739143
-correl lenght 64 -> 0.849317 ± 0.095793
-result: 0.856592 ± 0.095793
+correl lenght 1 -> 0.748828 ± 0.0558319
+correl lenght 2 -> 0.758855 ± 0.0658219
+correl lenght 4 -> 0.750298 ± 0.0639917
+correl lenght 8 -> 0.748487 ± 0.0626756
+correl lenght 16 -> 0.74513 ± 0.0676546
+correl lenght 32 -> 0.750305 ± 0.0720001
+correl lenght 64 -> 0.740985 ± 0.0724808
+correl lenght 128 -> 0.732819 ± 0.090465
+result: 0.747226 ± 0.090465
 -----------------------------
 
 -----------------------------
 side: 420 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.682856 ± 0.0672057
-correl lenght 2 -> 0.664583 ± 0.07628
-correl lenght 4 -> 0.678318 ± 0.0695457
-correl lenght 8 -> 0.68458 ± 0.0762755
-correl lenght 16 -> 0.684842 ± 0.0820484
-correl lenght 32 -> 0.673999 ± 0.0887571
-correl lenght 64 -> 0.68757 ± 0.104269
-result: 0.680555 ± 0.104269
+correl lenght 1 -> 0.658386 ± 0.0631828
+correl lenght 2 -> 0.657032 ± 0.0594245
+correl lenght 4 -> 0.648352 ± 0.0641863
+correl lenght 8 -> 0.658274 ± 0.0641679
+correl lenght 16 -> 0.652015 ± 0.0667691
+correl lenght 32 -> 0.642386 ± 0.0800401
+correl lenght 64 -> 0.655103 ± 0.0794341
+correl lenght 128 -> 0.653945 ± 0.0790149
+result: 0.649017 ± 0.0790149
 -----------------------------
 
 -----------------------------
 side: 460 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.520706 ± 0.077884
-correl lenght 2 -> 0.526725 ± 0.076537
-correl lenght 4 -> 0.517633 ± 0.0889853
-correl lenght 8 -> 0.528926 ± 0.0754356
-correl lenght 16 -> 0.516005 ± 0.0787146
-correl lenght 32 -> 0.523507 ± 0.0813299
-correl lenght 64 -> 0.528453 ± 0.0796055
-result: 0.523262 ± 0.0796055
+correl lenght 1 -> 0.694459 ± 0.0598964
+correl lenght 2 -> 0.678928 ± 0.0639883
+correl lenght 4 -> 0.672192 ± 0.0618718
+correl lenght 8 -> 0.691583 ± 0.0580112
+correl lenght 16 -> 0.697103 ± 0.0605459
+correl lenght 32 -> 0.686067 ± 0.0637718
+correl lenght 64 -> 0.691551 ± 0.0679505
+correl lenght 128 -> 0.685777 ± 0.0829713
+result: 0.680464 ± 0.0829713
 -----------------------------
 
 -----------------------------
 side: 500 | beta: 2
 -----------------------------
  --- energy error: 
-correl lenght 1 -> 0.595912 ± 0.0832201
-correl lenght 2 -> 0.597319 ± 0.0741913
-correl lenght 4 -> 0.589646 ± 0.0687804
-correl lenght 8 -> 0.577182 ± 0.0964572
-correl lenght 16 -> 0.587837 ± 0.075695
-correl lenght 32 -> 0.585268 ± 0.0996663
-correl lenght 64 -> 0.593532 ± 0.0943639
-result: 0.592282 ± 0.0943639
+correl lenght 1 -> 0.725208 ± 0.0622044
+correl lenght 2 -> 0.722338 ± 0.0702059
+correl lenght 4 -> 0.729296 ± 0.0654601
+correl lenght 8 -> 0.723745 ± 0.0696667
+correl lenght 16 -> 0.723843 ± 0.0772146
+correl lenght 32 -> 0.731514 ± 0.0751285
+correl lenght 64 -> 0.723537 ± 0.0803982
+correl lenght 128 -> 0.732806 ± 0.0824175
+result: 0.728589 ± 0.0824175
 -----------------------------
 
