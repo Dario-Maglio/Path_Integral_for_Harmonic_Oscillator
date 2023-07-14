@@ -54,14 +54,14 @@ using namespace std;
 // fix the Temperature
 #define BETA_GS 50
 // number of measures to save
-#define MEASURES 10000
+#define MEASURES 30000
 // decorrelation between measures
 #define I_DECORREL 100 // * V
 // initialization flags
 #define I_FLAG 2
 #define G_FLAG 1
 // flags for the main program
-#define WAVE_FLAG 1
+#define WAVE_FLAG 0
 #define ENER_FLAG 1
 #define CORR_FLAG 1
 #define ANAL_FLAG 1

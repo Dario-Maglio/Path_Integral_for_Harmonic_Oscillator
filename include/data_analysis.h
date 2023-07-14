@@ -44,8 +44,8 @@ mt19937_64 generator(SEED);
 // correlations in the MC-average
 #define MIN_CORR_LENGHT 1
 #define MAX_CORR_LENGHT 256
-#define NUM_FAKE_SAMP 100
-#define DIM_FAKE_SAMP 25000
+#define NUM_FAKE_SAMP 150
+#define DIM_FAKE_SAMP 50000
 
 //--- Contents -----------------------------------------------------------------
 
