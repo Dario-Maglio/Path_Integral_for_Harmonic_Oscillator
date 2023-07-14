@@ -69,8 +69,8 @@ def plot_wavefun(beta, side):
     # axis and style
     fig = plt.figure(title)
     plt.title(title)
-    plt.ylabel('$ Pr(x) $')
-    plt.xlabel('$ x $')
+    plt.ylabel('$ Pr(y) $')
+    plt.xlabel('$ y $')
     # data points
     binwidth = 0.1
     n_bins = np.arange(-4, 4, binwidth)
@@ -128,7 +128,7 @@ def plot_energy(beta):
     # points and function
     fit_x = np.linspace(min(x), max(x), 100)
     fit_y = fit_fun(fit_x, *parameters)
-    fit_label = f'fit E_c = {fit_a:.4f} ± {fit_da:.4f}'
+    fit_label = f'fit U(0) = {fit_a:.4f} ± {fit_da:.4f}'
     plt.plot(fit_x, fit_y, '-', label=fit_label)
     sim_label = f'collected data'
     plt.errorbar(x, y, yerr=y_err, fmt='<',label=sim_label)
@@ -162,12 +162,12 @@ def plot_energy_beta(x, y, y_err):
     # axis and style
     fig = plt.figure(title)
     plt.title(title)
-    plt.ylabel(r'$ U_{ren}(\beta) $')
+    plt.ylabel(r'$ U_{ren}(N \eta) $')
     plt.xlabel(r'$ N \eta $')
     # points and function
     fit_x = np.linspace(min(x), max(x), 100)
     fit_y = fit_ene(fit_x, *parameters)
-    fit_label = f'fit E_0 = {fit_a:.6f} ± {fit_da:.6f}'
+    fit_label = f'fit U_0 = {fit_a:.4f} ± {fit_da:.4f}'
     plt.plot(fit_x, fit_y, '-', label=fit_label)
     sim_label = f'computed energy'
     plt.errorbar(x, y, yerr=y_err, fmt='<',label=sim_label)
