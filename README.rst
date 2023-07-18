@@ -23,7 +23,7 @@ The structure of the repository is as follows:
 
 - ``Plots_and_fit``:
 
-  All produced plots are stored in this folder. Here we can find fit of the continuum limit of the internal energy at fixed beta and energy gap at fixed beta.
+  All produced plots are stored in this folder. Here we can find the fit of the continuum limit of the internal energy and the energy gaps at fixed beta.
 
 - ``Tests``:
 
