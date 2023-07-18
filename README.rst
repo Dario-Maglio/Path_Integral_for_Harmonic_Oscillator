@@ -2,7 +2,7 @@
 Path Integral for Harmonic Oscillator
 =====================================
 
-In the present repository, we describe the study of the quantum harmonic oscillator through numerical simulation. By adopting the Path Integral approach and implementing the Monte Carlo method, the internal energy of the system is studied as a function of temperature. The wave function of the ground state is determined, and the values of the energy gaps between the ground state and the first two excited levels are obtained.
+In the present repository, we describe the study of the quantum harmonic oscillator in one dimension through numerical simulation. By adopting the Path Integral approach and implementing the Monte Carlo method, the internal energy of the system is studied as a function of temperature. The wave function of the ground state is determined, and the values of the energy gaps between the ground state and the first two excited levels are obtained.
 
 Repository Structure
 ====================
