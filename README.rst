@@ -21,13 +21,14 @@ The structure of the repository is as follows:
 
   This program utilizes the data in the ``Data_simulation`` folder to plot the physical quantities of interest.
 
+- ``Plots_and_fit``:
+
+  All produced plots are stored in this folder.
+
 - ``Tests``:
 
   This directory contains easy-to-use examples for testing the class methods and verifying that the Monte Carlo algorithm has thermalized.
 
-- ``Plots_and_fit``:
-
-  All produced plots are stored in this folder.
 
 Analysis Results
 ================
@@ -35,6 +36,7 @@ Analysis Results
 Here are some of the plots generated from the analysis:
 
 - Monte Carlo trajectories and energies:
+
   .. image:: https://github.com/Dario-Maglio/Path_Integral_for_Harmonic_Oscillator/blob/54dc4be0294df21678a78ab28b849ae03f2e6852/Tests/test_montecarlo.png
      :align: center
      :width: 80%
