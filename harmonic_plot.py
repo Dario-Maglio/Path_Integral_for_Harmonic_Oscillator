@@ -11,13 +11,15 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 from scipy import stats
 
-#*******************************************************************************
-# PARAMETERS OF THE SIMULATION
-#
-# SIDE_SEP = separation between the sides of different simulations.
-#
-#*******************************************************************************
 
+
+#----------------------
+PLOT_WAVE = 0
+PLOT_ENER = 0
+PLOT_CORR = 1
+#----------------------
+
+#define max k in C(k)
 CORREL_LENGTH = 40
 # beta for ground state
 BETA_GS = 50
@@ -25,14 +27,19 @@ BETA_GS = 50
 SIDE_SEP = 40
 SIDE_MIN = 20
 SIDE_MAX = 500
+sides = np.arange(SIDE_MIN, SIDE_MAX+1, SIDE_SEP, dtype='int')
 # simulated betas
 betas = [1, 2, 3, 4, 7, 10, 15, 20]
 
 plt.style.use('ggplot')
 
-sides = np.arange(SIDE_MIN, SIDE_MAX+1, SIDE_SEP, dtype='int')
+
 
 #--- Contents ------------------------------------------------------------------
+
+def fit_lin(x, A, B):
+    y = A + B * np.power(x, 1)
+    return y
 
 def fit_fun(x, A, B):
     y = A + B * np.power(x, 2)
@@ -45,7 +52,6 @@ def fit_ene(x, A, B):
 def fit_gap(x, A, B):
     y = B * np.exp(-np.multiply(A, x))
     return y
-
 
 #--- Procedures ----------------------------------------------------------------
 
@@ -241,7 +247,8 @@ def plot_correlators(beta, label):
     plt.show()
 
     #--- Fit and plot energy gap
-    parameters, covariance = curve_fit(fit_fun, eta_val, gap_val, sigma=gap_err)
+    eta_sqr = [val*val for val in eta_val]
+    parameters, covariance = curve_fit(fit_lin, eta_sqr, gap_val, sigma=gap_err)
     fit_a = parameters[0]
     fit_b = parameters[1]
     std_deviation = np.sqrt(np.diag(covariance))
@@ -250,7 +257,7 @@ def plot_correlators(beta, label):
     print("\n---Fit parameters Energy Gap:")
     print(f"{fit_a} ± {fit_da}\n{fit_b} ± {fit_db}")
     # reduced chi squared
-    fit_y = fit_fun(eta_val, *parameters)
+    fit_y = fit_lin(eta_sqr, *parameters)
     chisq = np.sum(np.power(((gap_val - fit_y)/ gap_err), 2))
     chisqrd = chisq / (len(eta_val) - 3)
     print(f"Reduced chi squared: {chisqrd}")
@@ -260,12 +267,12 @@ def plot_correlators(beta, label):
     fig = plt.figure(title)
     plt.title(title)
     plt.ylabel(r'$ \Delta E (\eta) $')
-    plt.xlabel(r'$ \eta $')
+    plt.xlabel(r'$ \eta^2 $')
     # plot data
-    fit_x = np.linspace(min(eta_val), max(eta_val), 100)
-    fit_y = fit_fun(fit_x, *parameters)
+    fit_x = np.linspace(min(eta_sqr), max(eta_sqr), 100)
+    fit_y = fit_lin(fit_x, *parameters)
     plt.plot(fit_x, fit_y, '-', label=f'Fit gap = {fit_a:.4f} ± {fit_da:.4f}')
-    plt.errorbar(eta_val, gap_val, yerr=gap_err, fmt='.')
+    plt.errorbar(eta_sqr, gap_val, yerr=gap_err, fmt='.')
     # save and show
     plt.legend(loc='upper right')
     plt.savefig(os.path.join("Plots_and_fit", title + ".png"))
@@ -275,17 +282,18 @@ def plot_correlators(beta, label):
 
 if __name__ == '__main__':
 
-    plot_wavefun(BETA_GS, int((SIDE_MIN + SIDE_MAX)/2))
+    if(PLOT_WAVE):
+        plot_wavefun(BETA_GS, int((SIDE_MIN + SIDE_MAX)/2))
 
-    plot_correlators(BETA_GS, 1)
+    if(PLOT_CORR):
+        plot_correlators(BETA_GS, 1)
+        plot_correlators(BETA_GS, 2)
 
-    plot_correlators(BETA_GS, 2)
-
-    ene_val = []
-    ene_err = []
-    for beta in betas:
-        y_val, y_err = plot_energy(beta)
-        ene_val.append(y_val)
-        ene_err.append(y_err)
-
-    plot_energy_beta(betas, ene_val, ene_err)
+    if(PLOT_ENER):
+        ene_val = []
+        ene_err = []
+        for beta in betas:
+            y_val, y_err = plot_energy(beta)
+            ene_val.append(y_val)
+            ene_err.append(y_err)
+        plot_energy_beta(betas, ene_val, ene_err)
