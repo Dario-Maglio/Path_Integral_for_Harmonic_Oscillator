@@ -14,8 +14,8 @@ from scipy import stats
 
 
 #----------------------
-PLOT_WAVE = 0
-PLOT_ENER = 0
+PLOT_WAVE = 1
+PLOT_ENER = 1
 PLOT_CORR = 1
 #----------------------
 

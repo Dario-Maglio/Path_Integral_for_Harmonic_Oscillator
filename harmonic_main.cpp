@@ -24,9 +24,9 @@ using namespace std;
 
 // flags for the main program
 #define WAVE_FLAG 0   // trajectories data
-#define ENER_FLAG 1   // energies(eta) data
+#define ENER_FLAG 0   // energies(eta) data
 #define CORR_FLAG 1   // correlators(k) data
-#define SIMU_FLAG 1   // MC-simulations of the above
+#define SIMU_FLAG 0   // MC-simulations of the above
 #define ANAL_FLAG 1   // Post-processing and bootstrap
 
 /*******************************************************************************
